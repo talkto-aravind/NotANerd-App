@@ -25,6 +25,10 @@ jobs:
     permissions:
       contents: 'read'
       id-token: 'write'
+    needs:
+      - backend-build-and-test
+      - frontend-build-and-test 
+
 
     steps:
       # Step 1: Checkout the code from your repository.
