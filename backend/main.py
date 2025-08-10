@@ -57,3 +57,4 @@ def get_student_class():
 def notanerd_api_function(request):
     """Entry point for the Cloud Function."""
     return app(request.environ, lambda s, h: [s, h])
+

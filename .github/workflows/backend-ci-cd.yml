@@ -1,0 +1,83 @@
+# .github/workflows/backend-ci-cd.yml
+name: Backend CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'backend/**'
+  workflow_dispatch:
+
+env:
+  GCP_PROJECT_ID: notanerd-v1
+  GCP_REGION: asia-south1
+  FUNCTION_NAME: notanerd_api_function
+  ENTRY_POINT: notanerd_api_function
+  RUNTIME: python312
+  SOURCE_DIR: backend
+
+jobs:
+  # This job will run on every push to the main branch.
+  ci-checks:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ env.SOURCE_DIR }}
+    
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Run tests with pytest
+      run: |
+        PYTHONPATH=. pytest
+
+  # This job depends on the 'ci-checks' job passing.
+  # The 'if' condition is critical: it ensures deployment only happens for a merge commit.
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+    
+    needs: ci-checks
+    
+    # This condition checks if the push was a merge commit.
+    # A merge commit typically has more than one parent.
+    if: >
+      github.event_name == 'push' &&
+      contains(github.event.head_commit.message, 'Merge pull request')
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Authenticate with GCP
+        id: 'auth'
+        uses: 'google-github-actions/auth@v2'
+        with:
+          credentials_json: '${{ secrets.GCP_SA_KEY }}'
+
+      - name: Deploy Cloud Function
+        id: deploy-function
+        run: |
+          gcloud functions deploy ${{ env.FUNCTION_NAME }} \
+            --region=${{ env.GCP_REGION }} \
+            --source=${{ env.SOURCE_DIR }} \
+            --runtime=${{ env.RUNTIME }} \
+            --entry-point=${{ env.ENTRY_POINT }} \
+            --trigger-http \
+            --allow-unauthenticated \
+            --set-env-vars=FIREBASE_CREDENTIALS_PATH=./service-account.json \
+            --project=${{ env.GCP_PROJECT_ID }}
