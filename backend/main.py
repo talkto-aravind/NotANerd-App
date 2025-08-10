@@ -5,6 +5,7 @@ from auth import firebase_auth_required
 from datetime import date
 from logic import determine_class
 
+
 # Initialize the Flask application
 app = Flask(__name__)
 
