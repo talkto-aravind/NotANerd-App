@@ -1,0 +1,90 @@
+{
+  "project_info": {
+    "project_number": "239633005577",
+    "project_id": "notanerd-c17a2",
+    "storage_bucket": "notanerd-c17a2.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:239633005577:android:e64c9fcbadfc5f5f454cd8",
+        "android_client_info": {
+          "package_name": "com.example.frontend"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "239633005577-cpm35j28svjhatgvv40brvv0celakd1h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAHrOt8BFc5olla9yUe4Z4ySAC2OMxcwUE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "239633005577-cpm35j28svjhatgvv40brvv0celakd1h.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "239633005577-3neesa1hq3ebr7jkfofji4gtnj1c5g7n.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.notanerd.app"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:239633005577:android:69d80d25d55534ca454cd8",
+        "android_client_info": {
+          "package_name": "com.mycompany.notanerd"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "239633005577-1eii94if6i1hdncudb6tofl9b7g7ru2a.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mycompany.notanerd",
+            "certificate_hash": "9bbb3186b2189ef16d8f272bdab59362c395cbb4"
+          }
+        },
+        {
+          "client_id": "239633005577-cpm35j28svjhatgvv40brvv0celakd1h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAHrOt8BFc5olla9yUe4Z4ySAC2OMxcwUE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "239633005577-cpm35j28svjhatgvv40brvv0celakd1h.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "239633005577-3neesa1hq3ebr7jkfofji4gtnj1c5g7n.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.notanerd.app"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
