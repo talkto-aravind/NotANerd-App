@@ -1,0 +1,41 @@
+# .github/workflows/backend-ci.yml
+
+name: Python Backend CI
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      # This ensures the workflow only runs when changes are made in the backend directory.
+      - 'backend/**'
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./backend
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+
+    - name: Install dependencies
+      run: |
+        # Upgrade pip for the latest features
+        python -m pip install --upgrade pip
+        # We only need pytest for this CI step, but you would list other
+        # dependencies here in a real project.
+        pip install pytest
+
+    - name: Run tests with pytest
+      run: |
+        # The 'PYTHONPATH=.' part is crucial and ensures the `main.py` module can be
+        # imported correctly from the test file within the GitHub Actions runner.
+        PYTHONPATH=. pytest
