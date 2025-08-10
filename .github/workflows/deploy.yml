@@ -1,0 +1,63 @@
+# .github/workflows/deploy.yml
+name: Deploy Backend API to Google Cloud Functions
+
+# This workflow will run on every push to the 'main' branch.
+# This directly addresses Sub-task 3.3.2.
+on:
+  push:
+    branches:
+      - main
+  # This allows you to manually trigger the workflow from the GitHub UI.
+  workflow_dispatch:
+
+# Define environment variables to make the script more readable and reusable.
+env:
+  GCP_PROJECT_ID: notanerd-v1
+  GCP_REGION: asia-south1
+  FUNCTION_NAME: notanerd_api_function
+  ENTRY_POINT: notanerd_api_function
+  RUNTIME: python312
+  SOURCE_DIR: backend
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    steps:
+      # Step 1: Checkout the code from your repository.
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # Step 2: Set up Python environment.
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          
+      # Step 3: Authenticate with Google Cloud using a service account key.
+      # This step uses a secret stored in your GitHub repository.
+      # This addresses Sub-task 3.3.3.
+      - name: Authenticate with GCP
+        id: 'auth'
+        uses: 'google-github-actions/auth@v2'
+        with:
+          credentials_json: '${{ secrets.GCP_SA_KEY }}'
+
+      # Step 4: Deploy the Cloud Function.
+      # The gcloud command uses the environment variables defined above.
+      # This addresses Sub-task 3.3.4.
+      - name: Deploy Cloud Function
+        id: deploy-function
+        run: |
+          gcloud functions deploy ${{ env.FUNCTION_NAME }} \
+            --region=${{ env.GCP_REGION }} \
+            --source=${{ env.SOURCE_DIR }} \
+            --runtime=${{ env.RUNTIME }} \
+            --entry-point=${{ env.ENTRY_POINT }} \
+            --trigger-http \
+            --allow-unauthenticated \
+            --set-env-vars=FIREBASE_CREDENTIALS_PATH=./service-account.json \
+            --project=${{ env.GCP_PROJECT_ID }}

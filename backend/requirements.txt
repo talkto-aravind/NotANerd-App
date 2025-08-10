@@ -1,0 +1,18 @@
+#/backend/requirements.txt
+#This file lists all the necessary Python packages for the backend.
+#This library is used for testing the Python code.
+pytest
+
+#This is the Firebase Admin SDK for Python, which we need to verify ID tokens.
+firebase-admin==6.4.0
+
+Flask==2.3.2
+gunicorn>=22.0.0
+
+# Functions Framework is a crucial dependency for running Flask apps
+# in a Cloud Function environment.
+functions-framework
+
+# The cloudevents library is used to parse the incoming HTTP request
+# and adapt it for the Flask application.
+cloudevents

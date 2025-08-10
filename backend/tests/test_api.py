@@ -1,7 +1,7 @@
 # /backend/tests/test_api.py
 
 from datetime import date
-from main import determine_class
+from logic import determine_class
 
 # A fixed reference date for deterministic testing, matching the assumed school year.
 REFERENCE_DATE = date(2024, 6, 1)

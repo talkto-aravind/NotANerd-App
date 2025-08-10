@@ -1,55 +1,59 @@
 # /backend/main.py
+import functions_framework
+from flask import Flask, jsonify, request
+from auth import firebase_auth_required
+from datetime import date
+from logic import determine_class
 
-from datetime import date, timedelta
+# Initialize the Flask application
+app = Flask(__name__)
 
-def determine_class(date_of_birth, current_date=None):
-    """
-    Determines the student's class based on their date of birth as per CBSE rules.
-    A student is in 1st grade if they are 5 years or older as of June 1st.
+# A simple unprotected endpoint to show that the API is running
+@app.route('/')
+def health_check():
+    return jsonify({'status': 'API is running'}), 200
 
-    Args:
-        date_of_birth (date): The student's date of birth.
-        current_date (date, optional): The date to use for the calculation. If None,
-                                       the function uses the current date. Defaults to None.
+# An example of a protected endpoint
+# This endpoint will only be accessible if a valid Firebase ID token is provided
+@app.route('/protected-data', methods=['GET'])
+@firebase_auth_required
+def get_protected_data():
+    # The user's UID is attached to the request object by the decorator
+    user_uid = request.uid
+    return jsonify({
+        'message': f'Hello, user {user_uid}! This is protected data.',
+        'data': 'You have successfully authenticated.'
+    }), 200
 
-    Returns:
-        int: The guessed class (1, 0, or -1 for error).
-    """
-    if current_date is None:
-        current_date = date.today()
+# An example of a protected endpoint using the determine_class function
+@app.route('/student-class', methods=['POST'])
+@firebase_auth_required
+def get_student_class():
+    # The user's UID is attached to the request object by the decorator,
+    # though it's not used in this specific function.
+    # user_uid = request.uid
 
-    # The academic year starts on June 1st.
-    # We use the current_date to determine the academic year start date.
-    academic_year_start = date(current_date.year, 6, 1)
+    # Parse the request body for the date of birth
+    data = request.json
+    dob_string = data.get('date_of_birth')
 
-    # If the date of birth is in the future relative to the academic year start, it's an error.
-    if date_of_birth > academic_year_start:
-        return -1
+    if not dob_string:
+        return jsonify({'error': 'date_of_birth is required'}), 400
 
-    # Calculate the student's age on the start of the academic year.
-    age_in_years = (academic_year_start - date_of_birth).days / 365.25
+    try:
+        # Convert the string to a date object
+        dob = date.fromisoformat(dob_string)
+        student_class = determine_class(dob)
+        return jsonify({
+            'date_of_birth': dob_string,
+            'guessed_class': student_class
+        }), 200
+    except ValueError:
+        return jsonify({'error': 'Invalid date format. Expected YYYY-MM-DD.'}), 400
 
-    # A student is in 1st grade if they are 5 years or older as of June 1st.
-    if age_in_years >= 5:
-        return 1
-    elif age_in_years > 0:
-        return 0  # For a student who is not yet in 1st grade.
-    else:
-        # This case is now more robust due to the check for future dates.
-        return -1
-
-if __name__ == '__main__':
-    # Example usage with a fixed date for consistent results
-    fixed_date = date(2024, 8, 10) # Using a fixed date for the demonstration
-
-    dob_student_1 = date(2019, 6, 1)  # Exactly 5 on June 1st, 2024
-    print(f"DOB: {dob_student_1}, Class: {determine_class(dob_student_1, fixed_date)}")
-
-    dob_student_2 = date(2018, 5, 30) # Older than 5
-    print(f"DOB: {dob_student_2}, Class: {determine_class(dob_student_2, fixed_date)}")
-
-    dob_student_3 = date(2020, 6, 2) # Younger than 5
-    print(f"DOB: {dob_student_3}, Class: {determine_class(dob_student_3, fixed_date)}")
-
-    dob_student_4 = date(2025, 1, 1) # Invalid (future) DOB
-    print(f"DOB: {dob_student_4}, Class: {determine_class(dob_student_4, fixed_date)}")
+# This decorator is now the entry point for the Cloud Function,
+# simplifying the request routing process.
+@functions_framework.http
+def notanerd_api_function(request):
+    """Entry point for the Cloud Function."""
+    return app(request.environ, lambda s, h: [s, h])
