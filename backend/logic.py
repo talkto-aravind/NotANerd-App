@@ -38,3 +38,5 @@ def determine_class(date_of_birth, current_date=None):
         # This case is now more robust due to the check for future dates.
         return -1
 
+        
+
