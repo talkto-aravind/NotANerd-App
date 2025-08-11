@@ -26,7 +26,7 @@ void main() {
       final mockGoogleSignInAuthentication = MockGoogleSignInAuthentication();
       final mockUserCredential = MockUserCredential();
 
-      // Stubbing the methods and properties
+      // Stubbing the methods and properties for sign-in
       when(mockGoogleSignIn.signIn()).thenAnswer((_) async => mockGoogleSignInAccount);
       when(mockGoogleSignInAccount.authentication).thenAnswer((_) async => mockGoogleSignInAuthentication);
       when(mockGoogleSignInAuthentication.accessToken).thenAnswer((_) => 'fake_access_token');
@@ -46,6 +46,30 @@ void main() {
       expect(userCredential, mockUserCredential);
       verify(mockGoogleSignIn.signIn()).called(1);
       verify(mockFirebaseAuth.signInWithCredential(any)).called(1);
+    });
+
+    test('signOut should sign out from both Firebase and Google', () async {
+      // Mock objects
+      final mockFirebaseAuth = MockFirebaseAuth();
+      final mockGoogleSignIn = MockGoogleSignIn();
+
+      // Stubbing the sign-out methods
+      when(mockGoogleSignIn.signOut()).thenAnswer((_) async => null);
+      when(mockFirebaseAuth.signOut()).thenAnswer((_) async => null);
+
+      // Arrange
+      final authService = AuthService(
+        firebaseAuth: mockFirebaseAuth,
+        googleSignIn: mockGoogleSignIn,
+      );
+
+      // Act
+      await authService.signOut();
+
+      // Assert
+      // Verify that both signOut methods were called exactly once.
+      verify(mockGoogleSignIn.signOut()).called(1);
+      verify(mockFirebaseAuth.signOut()).called(1);
     });
   });
 }

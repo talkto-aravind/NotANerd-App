@@ -89,8 +89,8 @@ echo "## Issue Summary"
 echo ""
 
 # Get the total number of open and closed issues
-total_open=$(gh issue list --state 'open' --json title -q '. | length')
-total_closed=$(gh issue list --state 'closed' --json title -q '. | length')
+total_open=$(gh issue list --limit 500 --state 'open' --json title -q '. | length')
+total_closed=$(gh issue list --limit 500 --state 'closed' --json title -q '. | length')
 echo "Total Open Issues: $total_open"
 echo "Total Closed Issues: $total_closed"
 echo ""
@@ -98,13 +98,13 @@ echo ""
 # Fetch and list open issues grouped by milestone
 echo "### Open Issues"
 echo ""
-gh issue list --state 'open' --json title,milestone,number --limit 100 -q '.[] | "\(.milestone.title // "No Milestone"):\n  - #\(.number): \(.title)\n"' | sort -k1 | uniq
+gh issue list --state 'open' --json title,milestone,number --limit 500 -q '.[] | "\(.milestone.title // "No Milestone"):\n  - #\(.number): \(.title)\n"' | sort -k1 | uniq
 echo ""
 
 # Fetch and list closed issues grouped by milestone
-echo "### Closed Issues"
-echo ""
-gh issue list --state 'closed' --json title,milestone,number --limit 100 -q '.[] | "\(.milestone.title // "No Milestone"):\n  - #\(.number): \(.title)\n"' | sort -k1 | uniq
-echo ""
+#echo "### Closed Issues"
+#echo ""
+#gh issue list --state 'closed' --json title,milestone,number --limit 500 -q '.[] | "\(.milestone.title // "No Milestone"):\n  - #\(.number): \(.title)\n"' | sort -k1 | uniq
+#echo ""
 
 echo "--- Script Finished ---"

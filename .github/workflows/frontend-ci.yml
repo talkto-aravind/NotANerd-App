@@ -23,6 +23,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # Add a caching step to speed up dependency downloads
+      - name: Cache Flutter dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ${{ env.FLUTTER_ROOT }}/bin
+            ${{ env.PUB_CACHE }}
+          key: ${{ runner.os }}-flutter-${{ hashFiles('**/pubspec.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-flutter-
+
       - name: Set up Flutter
         # This action sets up the Flutter environment for us.
         uses: subosito/flutter-action@v2
@@ -31,17 +42,26 @@ jobs:
           flutter-version: '3.19.x'
 
       - name: Install dependencies
-        run: |
-          flutter pub get
+        # This command will be much faster if the cache is hit
+        run: flutter pub get
 
       - name: Check code formatting
-        run: |
-          flutter format --dry-run --set-exit-if-changed .
+        run: flutter format --dry-run --set-exit-if-changed .
 
       - name: Analyze code
-        run: |
-          flutter analyze
+        run: flutter analyze
 
       - name: Run widget tests
+        run: flutter test
+
+      # This new step generates the documentation after all previous steps (including tests)
+      # have passed. It will create a `doc/api` folder with the HTML documentation.
+      - name: Generate documentation
         run: |
-          flutter test
+          dart doc
+
+
+      # Optional: Add a step to build the app for a platform (e.g., web or Android)
+      # This ensures the app compiles successfully.
+      # - name: Build Web
+      #   run: flutter build web --release
