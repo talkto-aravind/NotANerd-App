@@ -31,6 +31,30 @@
 
   <title>frontend</title>
   <link rel="manifest" href="manifest.json">
+  <script>
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "firebase/app";
+    import { getAnalytics } from "firebase/analytics";
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+
+    // Your web app's Firebase configuration
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    const firebaseConfig = {
+      apiKey: "AIzaSyCsxsJKGhaVgmj8srSQIkNe4VpQBiLQ8ME",
+      authDomain: "notanerd-c17a2.firebaseapp.com",
+      projectId: "notanerd-c17a2",
+      storageBucket: "notanerd-c17a2.firebasestorage.app",
+      messagingSenderId: "239633005577",
+      appId: "1:239633005577:web:134dd4881168eede454cd8",
+      measurementId: "G-RB5S13F05J"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+  </script>
+
 </head>
 <body>
   <script src="flutter_bootstrap.js" async></script>
