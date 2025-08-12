@@ -31,10 +31,10 @@
               "client_type": 3
             },
             {
-              "client_id": "239633005577-3neesa1hq3ebr7jkfofji4gtnj1c5g7n.apps.googleusercontent.com",
+              "client_id": "239633005577-0bri5iqsu1f9kb3e8c8oks7mapkkh5d7.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.notanerd.app"
+                "bundle_id": "com.example.frontend"
               }
             }
           ]
@@ -75,10 +75,10 @@
               "client_type": 3
             },
             {
-              "client_id": "239633005577-3neesa1hq3ebr7jkfofji4gtnj1c5g7n.apps.googleusercontent.com",
+              "client_id": "239633005577-0bri5iqsu1f9kb3e8c8oks7mapkkh5d7.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.notanerd.app"
+                "bundle_id": "com.example.frontend"
               }
             }
           ]
